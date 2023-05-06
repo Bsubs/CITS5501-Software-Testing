@@ -30,4 +30,41 @@
 
 <num_people> ::= "1 " | "2 " | "3 " | "4 " | "5 " | "6 " | "7 " | "8 " | "9 " | "10 "
 
-<newline> ::= "\n"```
+<newline> ::= "\n"
+```
+
+## Question 2
+
+*Write a static Java method, countTerminalSymbols, which counts the terminal symbols in a grammar.*
+*The signature for the method should be: static int countTerminalSymbols(List<String>)*
+
+- Basically the method definition for this one is kinda weird
+- But anyway any item that appears in double quotes is terminal
+
+```
+import java.util.List;
+
+public class TerminalSymbolCounter {
+
+    public static void main(String[] args) {
+        List<String> myGrammar = List.of("<weekendDay>", "::=", "\"sat\"", "|", "\"sun\"");
+        System.out.println(countTerminalSymbols(myGrammar)); // Output: 2
+    }
+
+    static int countTerminalSymbols(List<String> grammar) {
+        int terminalSymbolsCount = 0;
+
+        for (String symbol : grammar) {
+            if (isTerminalSymbol(symbol)) {
+                terminalSymbolsCount++;
+            }
+        }
+
+        return terminalSymbolsCount;
+    }
+
+    private static boolean isTerminalSymbol(String symbol) {
+        return symbol.length() >= 2 && symbol.charAt(0) == '"' && symbol.charAt(symbol.length() - 1) == '"';
+    }
+}
+```
