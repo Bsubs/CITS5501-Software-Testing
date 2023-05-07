@@ -38,8 +38,9 @@
 *Write a static Java method, countTerminalSymbols, which counts the terminal symbols in a grammar.*
 *The signature for the method should be: static int countTerminalSymbols(List<String>)*
 
-- Basically the method definition for this one is kinda weird
-- But anyway any item that appears in double quotes is terminal
+- List passed in like this: `List.of("<weekendDay>", "::=", "\"sat\"", "|", "\"sun\"")`
+    - Output: <weekendDay> ::= "sat" | "sun"
+- Basically check for anything in double quotes
 
 ```
 import java.util.List;
@@ -64,7 +65,11 @@ public class TerminalSymbolCounter {
     }
 
     private static boolean isTerminalSymbol(String symbol) {
-        return symbol.length() >= 2 && symbol.charAt(0) == '"' && symbol.charAt(symbol.length() - 1) == '"';
+        if (symbol.length >= 2) {
+            return symbol.charAt(0) == '"' && symbol.charAt(symbol.length() - 1) == '"';
+        }
+        return false;
+        
     }
 }
 ```
