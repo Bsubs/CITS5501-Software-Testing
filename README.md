@@ -37,10 +37,10 @@
 ## Question 2
 
 *Write a static Java method, countTerminalSymbols, which counts the terminal symbols in a grammar.*
-*The signature for the method should be: static int countTerminalSymbols(List<String>)*
+*The signature for the method should be: static int countTerminalSymbols(List`<String>`)*
 
 - List passed in like this: `List.of("<weekendDay>", "::=", "\"sat\"", "|", "\"sun\"")`
-    - Output: <weekendDay> ::= "sat" | "sun"
+    - Output: `<weekendDay>` ::= "sat" | "sun"
 - Basically check for anything in double quotes
 
 ```
@@ -81,7 +81,7 @@ public class TerminalSymbolCounter {
 
 It is not possible to exhaustively test the syntax of gladius commands. 
 
-Derivation Coverage implies that test requirements encompass every possible string derivable from grammar G. In the context of this assignment, the grammar of concern is the <command> grammar developed in Question 1. To achieve derivation coverage, we need to comprehensively test each string from both the `air book req` and `shop flight fares` commands.
+Derivation Coverage implies that test requirements encompass every possible string derivable from grammar G. In the context of this assignment, the grammar of concern is the `<command>` grammar developed in Question 1. To achieve derivation coverage, we need to comprehensively test each string from both the `air book req` and `shop flight fares` commands.
 
 However, exhaustively testing the syntax of GLADUS commands is not possible, primarily due to the AirBookRequest command. The AirBookRequest command starts with `air book req`, includes an arbitrary number of segments, and concludes with `EOC`. The grammar for the segment_list, representing the segments, is displayed below:
 
@@ -89,24 +89,24 @@ However, exhaustively testing the syntax of GLADUS commands is not possible, pri
 
 The grammar consists of two production rules:
 
-1. <segment> <newline>: This rule denotes that a segment_list can be a single segment followed by a newline character.
-2. <segment> <newline> <segment_list>: This rule indicates that a segment_list can be a segment followed by another segment_list. This allows for recursive concatenation of multiple segments.
+1. `<segment> <newline>`: This rule denotes that a segment_list can be a single segment followed by a newline character.
+2. `<segment> <newline> <segment_list>`: This rule indicates that a segment_list can be a segment followed by another segment_list. This allows for recursive concatenation of multiple segments.
 
 The second production rule means that the segment_list grammar can comprise any combination of segments in any order, with no restrictions on segment repetitions. Consequently, the segment_list can become infinitely large, rendering it impossible to exhaustively test the syntax of GLADUS commands.
 
 By focusing solely on the shop flight fare command, attaining derivation coverage becomes feasible. The `shop flight fares` command is structured as follows:
 
-<command> ::= "shop flight fares " <origin> <destination> <trip_type> <cabin_type> <departure_date>
+`<command> ::= "shop flight fares " <origin> <destination> <trip_type> <cabin_type> <departure_date>`
 
 The following is the breakdown for each of the number of possibilities for each non-terminal symbol in the production:
 
-1. <origin>: 3-letter IATA code consisting of letters from 'A' to 'D'. Total combinations = 4^3 = 64
-2. <destination>: 3-letter IATA code consisting of letters from 'A' to 'D'. Total combinations = 4^3 = 64
-3. <trip_type>: 2 possible trip types: "OneWay" and "Return"
+1. `<origin>`: 3-letter IATA code consisting of letters from 'A' to 'D'. Total combinations = 4^3 = 64
+2. `<destination>`: 3-letter IATA code consisting of letters from 'A' to 'D'. Total combinations = 4^3 = 64
+3. `<trip_type>`: 2 possible trip types: "OneWay" and "Return"
     - "Return" has 21 possible combinations due to the "Length of Stay" ranging from 0-20
     - Total = 22
-4. <cabin_type>: 6 possible cabin types
-5. <departure_date>: 
+4. `<cabin_type>`: 6 possible cabin types
+5. `<departure_date>`: 
     - YYYY: 4-digit combination with 10 possible digits: 10^4 = 10,000
     - MM: 2-digit combination with 10 possible digits: 10^2 = 100
     - DD: 2-digit combination with 10 possible digits: 10^2 = 100
