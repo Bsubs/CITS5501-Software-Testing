@@ -66,7 +66,7 @@ public class TerminalSymbolCounter {
     }
 
     private static boolean isTerminalSymbol(String symbol) {
-        if (symbol.length >= 2) {
+        if (symbol.length() >= 2) {
             return symbol.charAt(0) == '"' && symbol.charAt(symbol.length() - 1) == '"';
         }
         return false;
@@ -159,7 +159,11 @@ public class ProductionCounter {
     }
 
     private static boolean isNonTerminalSymbol(String symbol) {
-        return symbol.length() >= 2 && symbol.charAt(0) == '<' && symbol.charAt(symbol.length() - 1) == '>';
+        if (symbol.length() >= 2) {
+            return symbol.charAt(0) == '<' && symbol.charAt(symbol.length() - 1) == '>';
+        }
+        return false;
+        
     }
 }
 ```
