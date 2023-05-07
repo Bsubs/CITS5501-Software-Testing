@@ -96,7 +96,7 @@ The second production rule means that the segment_list grammar can comprise any 
 
 ---
 
-By focusing solely on the shop flight fare command, attaining derivation coverage becomes feasible. The `shop flight fares` command is structured as follows:
+By focusing solely on the shop flight fare command, attaining derivation coverage becomes possible. The `shop flight fares` command is structured as follows:
 
 `<command> ::= "shop flight fares " <origin> <destination> <trip_type> <cabin_type> <departure_date>`
 
@@ -116,5 +116,50 @@ The following is the breakdown for each of the number of possibilities for each 
 
 Total number of combinations: 64 * 64 * 22 * 6 * 100,000,000 = 536,870,912,000,000
 
-There are a more than 500 trillion combinations required to achieve derivation coverage of the `shop flight fare` command. This is a finite number which shows that it is possible. However, it is not practical as tt would require a considerable amount of time and computational resources to process such a large number of test cases.
+There are a more than 500 trillion combinations required to achieve derivation coverage of the `shop flight fare` command. This is a finite number which shows that it is possible. However, it is not practical as it would require a considerable amount of time and computational resources to process such a large number of test cases.
 
+## Question 4
+
+*Write a static Java method, countProductions, which counts the number of productions in a grammar (see the Amman and Offutt text for a definition of “production”). The signature for the method should be: static int countTerminalSymbols(List`<String>`). The input will be a grammar in BNF or EBNF format (specifically, the notation accepted by the BNF playground), as detailed in question 2.*
+
+- Symbols in the grammar are either nonterminals, which must be rewritten further, or terminals, for which no rewriting is possible.
+    - Everything in quotes is a terminal. i.e. "A"
+    - Each possible rewriting of a given nonterminal is called a production or rule.
+    - We assume that any `<>` which is immediately followed by a `::=` is not a production
+
+```
+import java.util.List;
+
+public class ProductionCounter {
+
+    public static void main(String[] args) {
+        List<String> myGrammar = List.of("<weekendDay>", "::=", "\"sat\"", "|", "<one_two>", "\"sun\"", "<day>");
+        System.out.println(countProductions(myGrammar)); // Output: 2
+    }
+
+    static int countProductions(List<String> grammar) {
+        int productionsCount = 0;
+
+        for (int i = 0; i < grammar.size(); i++) {
+            String currentSymbol = grammar.get(i);
+            String nextSymbol = " ";
+            if ((i+1) >= grammar.size()) {
+                nextSymbol = " ";
+            }
+            else {
+                nextSymbol = grammar.get(i + 1);
+            }
+
+            if (isNonTerminalSymbol(currentSymbol) && !nextSymbol.equals("::=")) {
+                productionsCount++;
+            }
+        }
+
+        return productionsCount;
+    }
+
+    private static boolean isNonTerminalSymbol(String symbol) {
+        return symbol.length() >= 2 && symbol.charAt(0) == '<' && symbol.charAt(symbol.length() - 1) == '>';
+    }
+}
+```
