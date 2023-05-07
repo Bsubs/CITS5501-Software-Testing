@@ -94,6 +94,8 @@ The grammar consists of two production rules:
 
 The second production rule means that the segment_list grammar can comprise any combination of segments in any order, with no restrictions on segment repetitions. Consequently, the segment_list can become infinitely large, rendering it impossible to exhaustively test the syntax of GLADUS commands.
 
+---
+
 By focusing solely on the shop flight fare command, attaining derivation coverage becomes feasible. The `shop flight fares` command is structured as follows:
 
 `<command> ::= "shop flight fares " <origin> <destination> <trip_type> <cabin_type> <departure_date>`
