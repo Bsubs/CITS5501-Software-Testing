@@ -107,8 +107,8 @@ The following is the breakdown for each of the number of possibilities for each 
 2. `<destination>`: 3-letter IATA code consisting of letters from 'A' to 'D'. Total combinations = 4^3 = 64
 3. `<trip_type>`: 2 possible trip types: "OneWay" and "Return"
     - "Return" has 21 possible combinations due to the "Length of Stay" ranging from 0-20
-    - Total = 22
-4. `<cabin_type>`: 6 possible cabin types
+    - Total = 1 + 21 = 22
+4. `<cabin_type>`: 6 possible cabin types (as stated in assignment sheet)
 5. `<departure_date>`: 
     - YYYY: 4-digit combination with 10 possible digits: 10^4 = 10,000
     - MM: 2-digit combination with 10 possible digits: 10^2 = 100
@@ -168,3 +168,34 @@ public class ProductionCounter {
     }
 }
 ```
+
+## Question 5
+
+*Describe in detail the preconditions and postconditions of the constructor for the ShopFlightFareCommand class, justifying your answer.*
+
+Preconditions are any conditions which should be satisfied by the parameters or system state when the ShopFlightFare command is called. If the preconditions for the method are not satisfied, then the behaviour is undefined. The system does not guarantee any behaviour.
+
+Preconditions:
+
+- The origin, destination, tripType, lengthOfStay, cabinType, and departureDate parameters must be provided as input to the constructor.
+- The origin and destination should be 3-letter IATA codes.
+- The tripType should be either ONE_WAY or RETURN.
+- If the tripType is ONE_WAY, the lengthOfStay should be null.
+- If the tripType is RETURN, the lengthOfStay should be a number from 0 to 20 (inclusive).
+- The cabinType should be a valid cabin type code.
+- The departureDate should be a valid date, which must be after the current date but no more than 100 days past the current date.
+
+
+Postconditions are what the ShopFlightFare command returns after a successful execution. This also included any side effects of the functions. (changes to the system state).
+
+Postconditions:
+
+- If the origin or destination are not syntactically valid, a SyntacticError is thrown.
+- If the input parameters are syntactically valid but semantically incorrect, a SemanticError is thrown in the following cases:
+- The origin is the same as the destination.
+- The origin or destination are not valid IATA airport codes.
+- The flightNumber is not a valid flight number.
+- When the trip type is ONE_WAY, but a non-null lengthOfStay is specified.
+- When a non-null lengthOfStay is specified, but is not a number from 0 to 20 (inclusive).
+- If the departureDate is more than 100 days past the current date, a SemanticError is thrown.
+- If all the provided parameters are valid, a ShopFlightFareCommand object is created with the specified parameters.
