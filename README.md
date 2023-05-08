@@ -7,31 +7,32 @@
 *The grammar should specify any whitespace that needs to appear between other symbols in the command. (As a simplifying assumption, you may assume that a single space character is sufficient as a separator between words.)*
 
 ```
-<command> ::= "shop flight fares " <origin> <destination> <trip_type> <cabin_type> <departure_date> | "air book req" <newline> <segment_list> "EOC"
+<gladius_command> ::= "shop flight fares" <space> <origin> <destination> <trip_type> <cabin_type> <space> <departure_date> | "air book req" <newline> <segment_list> "EOC"
 
-<origin> ::= <letter> <letter> <letter> " "
-<destination> ::= <letter> <letter> <letter> " "
+<origin> ::= <letter> <letter> <letter> <space>
+<destination> ::= <letter> <letter> <letter> <space>
 <letter> ::= "A" | "B" | "C" | "D"
 
-<trip_type> ::= "OneWay " | "Return " <number>  " "
-<number> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20"
+<trip_type> ::= "OneWay " | "Return " <length_of_stay>  <space>
+<length_of_stay> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "13" | "14" | "15" | "16" | "17" | "18" | "19" | "20"
 
-<cabin_type> ::= "P " | "F " | "J " | "C " | "S " | "Y "
+<cabin_type> ::= "P" | "F" | "J" | "C" | "S" | "Y"
 
-<departure_date> ::= <digit> <digit> <digit> <digit> "-" <digit> <digit> "-" <digit> <digit> " "
+<departure_date> ::= <digit> <digit> <digit> <digit> "-" <digit> <digit> "-" <digit> <digit>
 <digit> ::= "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" 
 
 <segment_list> ::= <segment> <newline> | <segment> <newline> <segment_list>
 
-<segment> ::= "seg " <origin> <destination> <flight_number> <departure_date> <cabin_type> <num_people>
+<segment> ::= "seg" <space> <origin> <destination> <flight_number> <departure_date> <space> <cabin_type> <space> <num_people>
 
-<flight_number> ::= <airline_code> <digit> <digit> " "
+<flight_number> ::= <airline_code> <digit> <space> | <airline_code> <digit> <digit> <space> | <airline_code> <digit> <digit> <digit> <space> | <airline_code> <digit> <digit> <digit> <digit> <space>
 <airline_code> ::= <airline_letter> <airline_letter>
 <airline_letter> ::= "I" | "J" | "K" | "L"
 
-<num_people> ::= "1 " | "2 " | "3 " | "4 " | "5 " | "6 " | "7 " | "8 " | "9 " | "10 "
+<num_people> ::= "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10"
 
 <newline> ::= "\n"
+<space> ::= " "
 ```
 
 ## Question 2
