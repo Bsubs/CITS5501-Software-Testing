@@ -3,35 +3,29 @@ import java.util.List;
 public class ProductionCounter {
 
     public static void main(String[] args) {
-        List<String> myGrammar = List.of("<weekendDay>", "::=", "\"sat\"", "|", "<one_two>", "\"sun\"", "<day>");
+        List<String> myGrammar =
+        List.of("<greeting>", "::=", "\"hello\"", "|", "\"bonjour\"", "|", "\"hallå\"", "\n",
+                "<audience>", "::=", "\"world\"", "|", "\"y'all\"", "\n",
+                "<hello_world>", "::=", "<greeting>", "\" \"", "<audience>", "|", "<audience>");
         System.out.println(countProductions(myGrammar)); // Output: 2
+
     }
 
-    static int countProductions(List<String> grammar) {
-        int productionsCount = 0;
-
-        for (int i = 0; i < grammar.size(); i++) {
-            String currentSymbol = grammar.get(i);
-            String nextSymbol = " ";
-            if ((i+1) >= grammar.size()) {
-                nextSymbol = " ";
-            }
-            else {
-                nextSymbol = grammar.get(i + 1);
-            }
-
-            if (isNonTerminalSymbol(currentSymbol) && !nextSymbol.equals("::=")) {
-                productionsCount++;
+    public static int countProductions(List<String> grammar) {
+        int count = 0;
+        for (String symbol : grammar) {
+            if (symbol.equals("|")) {
+                count++;
             }
         }
 
-        return productionsCount;
-    }
-    private static boolean isNonTerminalSymbol(String symbol) {
-        if (symbol.length() >= 2) {
-            return symbol.charAt(0) == '<' && symbol.charAt(symbol.length() - 1) == '>';
+        // Add one for each production, as the first production does not have a preceding "|"
+        for (String symbol : grammar) {
+            if (symbol.contains("::=")) {
+                count++;
+            }
         }
-        return false;
-        
+        return count;
     }
+
 }
