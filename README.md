@@ -265,3 +265,44 @@ To achieve Base Choice Coverage, we would need to create test cases for each cha
 For example, for the "Origin" characteristic, we would first use a valid IATA code (the base choice) and the base choices for all other characteristics. Then, we would create test cases where we use an invalid IATA code, an empty string, a null value, and a non-string input for the "Origin", while using the base choices for all other characteristics.
 
 We would know Base Choice Coverage was achieved when we had tested each characteristic with its base choice and at least one other choice, and all other characteristics were at their base choice. This would mean we had tested the function's behavior for all characteristics with both their most common inputs and at least one less common or edge case input, while controlling for potential interactions between characteristics.
+
+
+## Question 7 
+
+*Write a test class using JUnit 5 called SegmentSubcommandTest, which contains @Test methods which implement the three test cases you described in question 6. Skeleton code for this class is provided in the supplied Java code, in the “test” directory. Your test cases should implement all appropriate best practices for unit tests*
+
+```
+class SegmentSubcommandTest {
+
+  @Test
+  void testSegmentSubcommand() {
+    // Test Case 1: Valid Inputs
+    try {
+      SegmentSubcommand segmentSubcommand1 = new SegmentSubcommand("JFK", "LAX", "AA123", LocalDate.now().plusDays(5), CabinType.ECONOMY, 2);
+      assertNotNull(segmentSubcommand1);
+    } catch (Exception e) {
+      fail("Exception should not be thrown with valid inputs.");
+    }
+
+    // Test Case 2: Origin and Destination are the same
+    try {
+      SegmentSubcommand segmentSubcommand2 = new SegmentSubcommand("JFK", "JFK", "AA123", LocalDate.now().plusDays(5), CabinType.ECONOMY, 2);
+      fail("Exception should have been thrown when origin and destination are the same.");
+    } catch (SemanticError e) {
+      // Expected error, so the test passes.
+    } catch (Exception e) {
+      fail("Unexpected exception type thrown.");
+    }
+
+    // Test Case 3: Departure Date is in the past
+    try {
+      SegmentSubcommand segmentSubcommand3 = new SegmentSubcommand("JFK", "LAX", "AA123", LocalDate.now().minusDays(5), CabinType.ECONOMY, 2);
+      fail("Exception should have been thrown when departure date is in the past.");
+    } catch (SemanticError e) {
+      // Expected error, so the test passes.
+    } catch (Exception e) {
+      fail("Unexpected exception type thrown.");
+    }
+  }
+}
+```

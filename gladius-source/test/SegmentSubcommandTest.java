@@ -5,12 +5,34 @@ import org.junit.jupiter.api.Test;
 
 class SegmentSubcommandTest {
 
-  /**
-   * Stub test method for {@link SegmentSubcommand#SegmentSubcommand(java.lang.String, java.lang.String, java.lang.String, java.time.LocalDate, CabinType, int)}.
-   */
   @Test
   void testSegmentSubcommand() {
-    fail("Not yet implemented"); // TODO
-  }
+    // Test Case 1: Valid Inputs
+    try {
+      SegmentSubcommand segmentSubcommand1 = new SegmentSubcommand("JFK", "LAX", "AA123", LocalDate.now().plusDays(5), CabinType.ECONOMY, 2);
+      assertNotNull(segmentSubcommand1);
+    } catch (Exception e) {
+      fail("Exception should not be thrown with valid inputs.");
+    }
 
+    // Test Case 2: Origin and Destination are the same
+    try {
+      SegmentSubcommand segmentSubcommand2 = new SegmentSubcommand("JFK", "JFK", "AA123", LocalDate.now().plusDays(5), CabinType.ECONOMY, 2);
+      fail("Exception should have been thrown when origin and destination are the same.");
+    } catch (SemanticError e) {
+      // Expected error, so the test passes.
+    } catch (Exception e) {
+      fail("Unexpected exception type thrown.");
+    }
+
+    // Test Case 3: Departure Date is in the past
+    try {
+      SegmentSubcommand segmentSubcommand3 = new SegmentSubcommand("JFK", "LAX", "AA123", LocalDate.now().minusDays(5), CabinType.ECONOMY, 2);
+      fail("Exception should have been thrown when departure date is in the past.");
+    } catch (SemanticError e) {
+      // Expected error, so the test passes.
+    } catch (Exception e) {
+      fail("Unexpected exception type thrown.");
+    }
+  }
 }
