@@ -272,13 +272,18 @@ We would know Base Choice Coverage was achieved when we had tested each characte
 *Write a test class using JUnit 5 called SegmentSubcommandTest, which contains @Test methods which implement the three test cases you described in question 6. Skeleton code for this class is provided in the supplied Java code, in the “test” directory. Your test cases should implement all appropriate best practices for unit tests*
 
 ```
+import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDate;
+import org.junit.jupiter.api.Test;
+
+
 class SegmentSubcommandTest {
 
   @Test
   void testSegmentSubcommand() {
     // Test Case 1: Valid Inputs
     try {
-      SegmentSubcommand segmentSubcommand1 = new SegmentSubcommand("JFK", "LAX", "AA123", LocalDate.now().plusDays(5), CabinType.ECONOMY, 2);
+      SegmentSubcommand segmentSubcommand1 = new SegmentSubcommand("JFK", "LAX", "AA123", LocalDate.now().plusDays(5), CabinType.EconomyClass, 2);
       assertNotNull(segmentSubcommand1);
     } catch (Exception e) {
       fail("Exception should not be thrown with valid inputs.");
@@ -286,7 +291,7 @@ class SegmentSubcommandTest {
 
     // Test Case 2: Origin and Destination are the same
     try {
-      SegmentSubcommand segmentSubcommand2 = new SegmentSubcommand("JFK", "JFK", "AA123", LocalDate.now().plusDays(5), CabinType.ECONOMY, 2);
+      SegmentSubcommand segmentSubcommand2 = new SegmentSubcommand("JFK", "JFK", "AA123", LocalDate.now().plusDays(5), CabinType.EconomyClass, 2);
       fail("Exception should have been thrown when origin and destination are the same.");
     } catch (SemanticError e) {
       // Expected error, so the test passes.
@@ -296,7 +301,7 @@ class SegmentSubcommandTest {
 
     // Test Case 3: Departure Date is in the past
     try {
-      SegmentSubcommand segmentSubcommand3 = new SegmentSubcommand("JFK", "LAX", "AA123", LocalDate.now().minusDays(5), CabinType.ECONOMY, 2);
+      SegmentSubcommand segmentSubcommand3 = new SegmentSubcommand("JFK", "LAX", "AA123", LocalDate.now().minusDays(5), CabinType.EconomyClass, 2);
       fail("Exception should have been thrown when departure date is in the past.");
     } catch (SemanticError e) {
       // Expected error, so the test passes.
@@ -305,4 +310,72 @@ class SegmentSubcommandTest {
     }
   }
 }
+
 ```
+
+## Question 8 
+
+*Describe a set of test cases for the CommandParser.parse() method which have production coverage of the grammar you specified as an answer to question 1. Explain why it is that your test cases satisfy this coverage criterion.*
+
+Production coverage means that each production is covered by at least one test case. In the case of the `<gladius_command>` grammer, the breakdown of the number of productions for each rule is as follows:
+
+- `<gladius_command>`: 2
+- `<origin>`: 1
+- `<destination>`:1
+- `<letter>`: 4
+- `<trip_type>`: 2
+- `<length_of_stay>`: 21
+- `<cabin_type>`: 6
+- `<departure_date>`: 1
+- `<digit>`: 10
+- `<segment_list>`: 2
+- `<segment>`: 1
+- `<flight_number>`: 4
+- `<airline_code>`: 1
+- `<airline_letter>`: 4
+- `<num_people>`: 10
+- `<newline>`: 1
+- `<space>`: 1
+
+Summing these up, there are a total of 72 total productions in the `<gladius_command>` grammer, a maximum of 72 tests will be required to achieve production coverage of the language by exercising each one of the productions. However, we can achieve production coverage using only 30 tests:
+
+1. `shop flight fares ABCD DCBA OneWay P 0123-45-67`
+2. `shop flight fares ABCD DCBA Return 0 F 0123-45-89`
+3. `shop flight fares ABCD DCBA Return 1 J 0123-45-89`
+4. `shop flight fares ABCD DCBA Return 2 C 0123-45-89`
+5. `shop flight fares ABCD DCBA Return 3 S 0123-45-89`
+6. `shop flight fares ABCD DCBA Return 4 Y 0123-45-89`
+7. `shop flight fares ABCD DCBA Return 5 Y 0123-45-89`
+8. `shop flight fares ABCD DCBA Return 6 Y 0123-45-89`
+9. `shop flight fares ABCD DCBA Return 7 Y 0123-45-89`
+10. `shop flight fares ABCD DCBA Return 8 Y 0123-45-89`
+11. `shop flight fares ABCD DCBA Return 9 Y 0123-45-89`
+12. `shop flight fares ABCD DCBA Return 10 Y 0123-45-89`
+13. `shop flight fares ABCD DCBA Return 11 Y 0123-45-89`
+14. `shop flight fares ABCD DCBA Return 12 Y 0123-45-89`
+15. `shop flight fares ABCD DCBA Return 13 Y 0123-45-89`
+16. `shop flight fares ABCD DCBA Return 14 Y 0123-45-89`
+17. `shop flight fares ABCD DCBA Return 15 Y 0123-45-89`
+18. `shop flight fares ABCD DCBA Return 16 Y 0123-45-89`
+19. `shop flight fares ABCD DCBA Return 17 Y 0123-45-89`
+20. `shop flight fares ABCD DCBA Return 18 Y 0123-45-89`
+21. `shop flight fares ABCD DCBA Return 19 Y 0123-45-89`
+22. `shop flight fares ABCD DCBA Return 20 Y 0123-45-89`
+
+23. `air book req\nseg ABCD DCBA IJ0 2023-12-12 P 1\nEOC`
+24. `air book req\nseg ABCD DCBA KL12 2023-12-12 P 2\nseg ABCD DCBA KL345 2023-12-12 P 3\nseg ABCD DCBA KL6789 2023-12-12 P 4\nEOC`
+25. `air book req\nseg ABCD DCBA IJ0 2023-12-12 P 5\nEOC`
+26. `air book req\nseg ABCD DCBA IJ0 2023-12-12 P 6\nEOC`
+27. `air book req\nseg ABCD DCBA IJ0 2023-12-12 P 7\nEOC`
+28. `air book req\nseg ABCD DCBA IJ0 2023-12-12 P 8\nEOC`
+29. `air book req\nseg ABCD DCBA IJ0 2023-12-12 P 9\nEOC`
+30. `air book req\nseg ABCD DCBA IJ0 2023-12-12 P 10\nEOC`
+
+It is important to note that production coverage could have been achieved in 24 tests. This would be done by simply adding the segments from 25-20 to the segment list in 24. However, they have been formatted as 30 tests for ease of reading. The 30 tests cases above exercise each production in the grammer at least once. Therefore, it can be said that we have achieved production coverage. 
+
+## Question 10
+
+*Your colleague Oreb has been reading about logic-based testing, and wonders whether it would be a good use of time to assess – once an initial suite of tests is in place – what level of coverage the tests for the gladius system have (e.g. do they have Active Clause Coverage)?*
+
+*Answer the following question: Would measuring logic-based coverage for the gladius system be a good use of the team’s time? Why or why not? Explain your reasoning.*
+
