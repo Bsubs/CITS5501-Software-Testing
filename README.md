@@ -53,25 +53,38 @@ public class TerminalSymbolCounter {
         List<String> myGrammar = List.of("<weekendDay>", "::=", "\"sat\"", "|", "\"sun\"");
         System.out.println(countTerminalSymbols(myGrammar)); // Output: 2
     }
+    
+    /**
+        Counts the number of terminal symbols in a grammar.
+        @param grammar the list of strings representing the grammar rules
+        @return the count of terminal symbols in the grammar
+    */
+    public static int countTerminalSymbols(List<String> grammar) {
+        int count = 0;
 
-    static int countTerminalSymbols(List<String> grammar) {
-        int terminalSymbolsCount = 0;
-
-        for (String symbol : grammar) {
-            if (isTerminalSymbol(symbol)) {
-                terminalSymbolsCount++;
+        for (String rule : grammar) {
+            String[] tokens = rule.split("\\s+"); // Split rule into tokens
+            
+            for (String token : tokens) {
+                if (token.startsWith("\"") && token.endsWith("\"")) {
+                    count++; // Increment count for each terminal symbol
+                } 
+                else if (token.matches("\\[\\d{1,2}-\\d{1,2}\\]")) {
+                    String[] rangeTokens = token.substring(1, token.length() - 1).split("-");
+                    int start = Integer.parseInt(rangeTokens[0]);
+                    int end = Integer.parseInt(rangeTokens[1]);
+                    count += (end - start + 1); // Increment count for each terminal symbol in the range
+                }            
+                else if (token.matches("\\[\\w-\\w+\\]")) {
+                    String[] rangeTokens = token.substring(1, token.length() - 1).split("-");
+                    char start = rangeTokens[0].charAt(0);
+                    char end = rangeTokens[1].charAt(0);
+                    count += (Character.toLowerCase(end) - Character.toLowerCase(start) + 1); // Increment count for each terminal symbol in the range
+                }
             }
         }
 
-        return terminalSymbolsCount;
-    }
-
-    private static boolean isTerminalSymbol(String symbol) {
-        if (symbol.length() >= 2) {
-            return symbol.charAt(0) == '"' && symbol.charAt(symbol.length() - 1) == '"';
-        }
-        return false;
-        
+        return count;
     }
 }
 ```
@@ -138,8 +151,15 @@ public class ProductionCounter {
         System.out.println(countProductions(myGrammar)); // Output: 2
     }
 
+    /**
+        Counts the number of productions in a grammar.
+        @param grammar the list of strings representing the grammar rules
+        @return the count of productions in the grammar
+    */
     public static int countProductions(List<String> grammar) {
         int count = 0;
+        
+        // Adds a count for each instance of "|" which symbolizes a production
         for (String symbol : grammar) {
             if (symbol.equals("|")) {
                 count++;
@@ -152,6 +172,30 @@ public class ProductionCounter {
                 count++;
             }
         }
+        
+        // Accounts for BNF playground syntactic sugar where [1-x] represents x productions 
+        for (String symbol : grammar) {
+            String[] tokens = symbol.split("\\s+"); // Split rule into tokens
+            
+            for (String token : tokens) {
+                // Accounts for digits 
+                if (token.matches("\\[\\d{1,2}-\\d{1,2}\\]")) {
+                    String[] rangeTokens = token.substring(1, token.length() - 1).split("-");
+                    int start = Integer.parseInt(rangeTokens[0]);
+                    int end = Integer.parseInt(rangeTokens[1]);
+                    count += (end - start); // Increment count for each terminal symbol in the range
+                }            
+                // Accounts for characters
+                else if (token.matches("\\[\\w-\\w+\\]")) {
+                    String[] rangeTokens = token.substring(1, token.length() - 1).split("-");
+                    char start = rangeTokens[0].charAt(0);
+                    char end = rangeTokens[1].charAt(0);
+                    count += (Character.toLowerCase(end) - Character.toLowerCase(start)); // Increment count for each terminal symbol in the range
+                }
+            }
+        }
+
+
         return count;
     }
 }
@@ -201,44 +245,47 @@ Postconditions are what the ShopFlightFare command returns after a successful ex
 
 *You need not exhaustively describe all characteristics, partitions, test cases and values that would be needed, but should briefly discuss what more would be needed – beyond the eight characteristics and three test cases you have described – to achieve Base Choice Coverage, and how you would know when it was achieved.*
 
-Input Space Partitioning (ISP) is a technique that involves dividing the imput space into partitions. Partitions are a collection of disjoint sets which cover the domain of the function that we are trying to model. 
+Input Space Partitioning (ISP) is a technique that involves dividing the input space into partitions. Partitions are a collection of disjoint sets which cover the domain of the function that we are trying to model. 
 
-For the parameterrs origin, destination and flight number, syntatic correctness will be part of the partitions tested. As a postcondition, the method throws an exception if one of the above parameters is syntatically incorrect so that will need to be tested. 
+For the parameters origin, destination and flight number, syntactic correctness will be part of the partitions tested. As a postcondition, the method throws an exception if one of the above parameters is syntactically incorrect so that will need to be tested. 
 
-For the parameters cabinType, departureDate and numPeople, syntatic correctness will not be one of the partitions tested as the syntatic corrrectness of those parameters are assumed preconditions of the method. Behaviour is undefined in the event that one of these parameters is not syntatically correct. 
+For the parameters cabinType, departureDate and numPeople, syntatic correctness will not be one of the partitions tested as the syntatic correctness of those parameters are assumed preconditions of the method. Behaviour is undefined in the event that one of these parameters is not syntactically correct. 
 
-Attempting to pass in null values will not be tested as this is simply testing the ability of the java virtual machine to detech null values. We will also not include any partitions that involve passing in invalid types (such as a int into a Sting parameter) as the code would not compile. 
+We will also not include any partitions that involve passing in invalid types (such as a int into a Sting parameter) as the code would not compile. 
 
 - `origin`: The origin airport code. It should be a valid 3-letter IATA airport code. Partitions: 
-    - Syntatically and semantically valid codes: This is the base choice and tests for what happens when a valid code is input.
-    - Syntatically valid but semantically invalid codes: This tests the ability of the method to throw a SemanticError due to invalid IATA codes.
-    - Syntatically Invalid Codes: This tests the ability of the method to throw a SyntacticError when presented with IATA codes greater or lesser than 3 letters long.
+    - Semantically valid codes: This is the base choice
+    - Semantically invalid codes: This tests the ability of the method to throw a SemanticError due to invalid IATA codes.
+    - 
 
 - `destination`: The destination airport code. It should be a valid 3-letter IATA airport code. Partitions: valid codes, invalid codes, non-string inputs, null/empty.
-    - Syntatically and semantically valid codes: This is the base choice and tests for what happens when a valid code is input.
-    - Syntatically valid but semantically invalid codes: This tests the ability of the method to throw a SemanticError due to invalid IATA codes.
-    - Syntatically Invalid Codes: This tests the ability of the method to throw a SyntacticError when presented with IATA codes greater or lesser than 3 letters long.
+    - Semantically valid codes: This is the base choice
+    - Semantically invalid codes: This tests the ability of the method to throw a SemanticError due to invalid IATA codes.
+
+- `origin & destination`: This tests if the parser can correctly detect syntactically valid and invalid codes
+    - Syntactically Valid Codes: This is the base choice
+    - Syntactically Invalid Codes: This tests the ability of the method to throw a Syntactic Error when presented with IATA codes greater or lesser than 3 letters long.
 
 - `origin & destination`: The origin airport code should be different from the destination airport code. This is a compound characteristic involving both the origin and destination. There will be no need to test for syntax or semantics here as the ability of the class to handle those situations should have already been tested in the previous partition.
-    - Where origin and destination are different, syntatically and semantically correct IATA codes
-    - Where origin and destination are the same, syntatically and semantically correct IATA codes
+    - Where origin and destination are different, syntactically and semantically correct IATA codes. This is the base choice
+    - Where origin and destination are the same, syntactically and semantically correct IATA codes
 
 - `flightNumber`: The flight number. It should be a valid flight number. 
-    - Syntatically and semantically valid codes: This is the base choice and tests for what happens when a valid flight number is input.
-    - Syntatically valid but semantically invalid codes: This tests the ability of the method to throw a SemanticError due to invalid flight numbers.
-    - Syntatically Invalid Codes: This tests the ability of the method to throw a SyntacticError when presented with flight numbers that do no adhere to the definition of flight numbers as per the assignment specification.
+    - Syntactically and semantically valid codes: This is the base choice
+    - Syntactically valid but semantically invalid codes: This tests the ability of the method to throw a SemanticError due to invalid flight numbers.
+    - Syntactically Invalid Codes: This tests the ability of the method to throw a SyntacticError when presented with flight numbers that do not adhere to the definition of flight numbers as per the assignment specification.
 
 - `departureDate`: The departure date. It should be a date in the future. 
-    - Future Date: This represents a date after the current date. This is the base choice and tests for what happens when a valid departure date is input.
+    - Future Date: This represents a date after the current date. This is the base choice and tests for what happens when a valid departure date is input. This is the base choice.
     - Past Date: This represents a date that is strictly before the current date. This tests the ability of the method to throw a SemanticError due to invalid date.
-    - Currrent Date: This represents a boundary case where the departure date is set to be the current date. This tests the ability of the method to throw a SemanticError due to invalid date.
+    - Current Date: This represents a boundary case where the departure date is set to be the current date. 
 
 - `cabinType`: The cabin type. Partitions: valid cabin types, invalid cabin types, non-string inputs, null/empty.
-    - Valid Cabin Type: One of the 6 possible cabin types
+    - Valid Cabin Type: One of the 6 possible cabin types. This is the base choice.
     - Invalid Cabin Type: Any letter that is not one of the 6 possible cabin types
 
 - `numPeople`: The number of people for which the booking is to be made. It should be between 1 and 10, inclusive. 
-    - 1: Boundary Case
+    - 1: Boundary Case. This is the base choice.
     - 10: Boundary Case
     - -1: Negative Case
     - 11: Exceeds 10
@@ -262,9 +309,10 @@ Test Cases:
 
 To achieve Base Choice Coverage, we would need to create test cases for each characteristic where we use the base choice for that characteristic and the base choices for all other characteristics. Then, we would create additional test cases where we use other choices for one characteristic while keeping the base choices for all other characteristics.
 
-For example, for the "Origin" characteristic, we would first use a valid IATA code (the base choice) and the base choices for all other characteristics. Then, we would create test cases where we use an invalid IATA code, an empty string, a null value, and a non-string input for the "Origin", while using the base choices for all other characteristics.
+For example, for the "Origin" characteristic, we would first use a valid IATA code (the base choice) and the base choices for all other characteristics. Then, we would create test cases where we use an invalid IATA code, for the "Origin", while using the base choices for all other characteristics.
 
-We would know Base Choice Coverage was achieved when we had tested each characteristic with its base choice and at least one other choice, and all other characteristics were at their base choice. This would mean we had tested the function's behavior for all characteristics with both their most common inputs and at least one less common or edge case input, while controlling for potential interactions between characteristics.
+We would know Base Choice Coverage was achieved when we had tested each characteristic with its base choice and at least one other choice, and all other characteristics were at their base choice. This would mean we had tested the function's behaviour for all characteristics with both their most common inputs and at least one less common or edge case input, while controlling for potential interactions between characteristics.
+
 
 
 ## Question 7 
@@ -379,3 +427,17 @@ It is important to note that production coverage could have been achieved in 24 
 
 *Answer the following question: Would measuring logic-based coverage for the gladius system be a good use of the team’s time? Why or why not? Explain your reasoning.*
 
+Logic based testing models the internal structure of the boolean conditions in the Gladius system. Logic expressions show up in every program whenever a user or the program makes a decision based on a condition. In this way, logig based coverage aims to assess the extent to which the different logical conditions and paths within a program or system have been executed.
+
+The aim would be to ensure that all these paths are covered by the tests, thereby ensuring that the function can handle all possible inputs and scenarios. This would include not only expected values and edge cases but also incorrect and unexpected inputs to test the robustness of the command and how it handles errors.
+
+In order to achieve active clause coverage we need to find values for each clause c in the predicate p, we find values for all the other clauses in p such that c determines p. In the context of gladius commands, this means that we need to make sure that for each of our clauses in the command we need to make the validity of the entire predicate hinge on that. This can be achieved by passing valid values for each of the other clauses and only changing the clauses we are looking at. 
+
+For example, consider the `shop flight fares ORIGIN DESTINATION TRIP_TYPE [LENGTH_OF_STAY] CABIN_TYPE DEPARTURE_DATE` command. If we want ORIGIN to determine the validity of the command, we can use the 2 following commands:
+
+- `shop flight fares JFK LAX Return 5 P 2023-06-01` Expected output: true
+- `shop flight fares HHG LAX Return 5 P 2023-06-01` Expected output: false
+
+Destination, trip type, length of stay, cabin type and departure date are correct, leaving the fate of the predicate hinging on the ORIGIN variable. 
+
+Applying logic based testing to the Gladius system is also not very difficult as we have great controllabiility of the variables. We are able to directly assign values to each of our variables through the command line and not have to deal with internal variables. 
