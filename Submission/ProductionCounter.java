@@ -34,24 +34,20 @@ public class ProductionCounter {
         }
         
         // Accounts for BNF playground syntactic sugar where [1-x] represents x productions 
-        for (String symbol : grammar) {
-            String[] tokens = symbol.split("\\s+"); // Split rule into tokens
-            
-            for (String token : tokens) {
-                // Accounts for digits 
-                if (token.matches("\\[\\d{1,2}-\\d{1,2}\\]")) {
-                    String[] rangeTokens = token.substring(1, token.length() - 1).split("-");
-                    int start = Integer.parseInt(rangeTokens[0]);
-                    int end = Integer.parseInt(rangeTokens[1]);
-                    count += (end - start); // Increment count for each terminal symbol in the range
-                }            
-                // Accounts for characters
-                else if (token.matches("\\[\\w-\\w+\\]")) {
-                    String[] rangeTokens = token.substring(1, token.length() - 1).split("-");
-                    char start = rangeTokens[0].charAt(0);
-                    char end = rangeTokens[1].charAt(0);
-                    count += (Character.toLowerCase(end) - Character.toLowerCase(start)); // Increment count for each terminal symbol in the range
-                }
+        for (String token : grammar) {
+
+            if (token.matches("\\[\\d{1,2}-\\d{1,2}\\]")) {
+                String[] rangeTokens = token.substring(1, token.length() - 1).split("-");
+                int start = Integer.parseInt(rangeTokens[0]);
+                int end = Integer.parseInt(rangeTokens[1]);
+                count += (end - start); // Increment count for each terminal symbol in the range
+            }            
+            // Accounts for characters
+            else if (token.matches("\\[\\w-\\w+\\]")) {
+                String[] rangeTokens = token.substring(1, token.length() - 1).split("-");
+                char start = rangeTokens[0].charAt(0);
+                char end = rangeTokens[1].charAt(0);
+                count += (Character.toLowerCase(end) - Character.toLowerCase(start)); // Increment count for each terminal symbol in the range
             }
         }
 

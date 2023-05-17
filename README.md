@@ -292,17 +292,17 @@ We will also not include any partitions that involve passing in invalid types (s
 
 Test Cases:
 
-- Test Case 1
+- Test Case 1 (Test ID: 01)
     - Fixtures: Origin = "JFK", Destination = "LAX", FlightNumber = "AA123", DepartureDate = Future Date, CabinType = "Economy", NumPeople = 2.
     - Test Values: All fixtures are valid values for their respective characteristics.
     - Expected Values: The constructor should successfully create a SegmentSubcommand object with these attributes.
 
-- Test Case 2
+- Test Case 2 (Test ID: 02)
     - Fixtures: Origin = "JFK", Destination = "JFK", FlightNumber = "AA123", DepartureDate = Future Date, CabinType = "Economy", NumPeople = 2.
     - Test Values: The origin is the same as the destination.
     - Expected Values: A SemanticError should be thrown because the origin is the same as the destination.
 
-- Test Case 3
+- Test Case 3 (Test ID: 03)
     - Fixtures: Origin = "JFK", Destination = "LAX", FlightNumber = "AA123", DepartureDate = Past Date, CabinType = "Economy", NumPeople = 2.
     - Test Values: The DepartureDate is a date in the past.
     - Expected Values: A SemanticError should be thrown because the departure date is on or before the current date.
@@ -326,6 +326,26 @@ import org.junit.jupiter.api.Test;
 
 
 class SegmentSubcommandTest {
+
+  /**
+   * Sets up the test fixture.
+   *
+   * Called before every test case method.
+   */
+  @BeforeEach
+  public void setUp()
+  {
+  }
+
+  /**
+   * Tears down the test fixture.
+   *
+   * Called after every test case method.
+   */
+  @AfterEach
+  public void tearDown()
+  {
+  }
 
   @Test
   void testSegmentSubcommand() {
