@@ -215,10 +215,10 @@ It should be noted that the Javadoc for the ShopFlightFareCommand is incomplete.
 - If the tripType is RETURN, the lengthOfStay should be a number from 0 to 20 (inclusive).
 - The cabinType should be a syntactically and semantically valid cabin type code.
 - The departureDate should be a syntactically valid date
-- The currency code should be syntatically valid
+- The currency code should be syntactically valid
 - The departureDateTime should be a syntactically valid dateTime
 - returnDateTime can be null or a non-null value depending on tripType
-- flightNumber should be a syntatically valid flight number 
+- flightNumber should be a syntactically valid flight number 
 
 ---
 
@@ -233,6 +233,8 @@ Postconditions are what the ShopFlightFare command returns after a successful ex
     - When the trip type is ONE_WAY, but a non-null returnDateTime is specified.
     - When a non-null returnDateTime is specified, but is before the departureDateTime.
     - When a negative fare is specified.
+
+
 
 
 ## Question 6
@@ -293,19 +295,25 @@ We will also not include any partitions that involve passing in invalid types (s
 Test Cases:
 
 - Test Case 1 (Test ID: 01)
+    - This test case tests for the base choice where all parameters are syntactically and semantically valid
     - Fixtures: Origin = "JFK", Destination = "LAX", FlightNumber = "AA123", DepartureDate = Future Date, CabinType = "Economy", NumPeople = 2.
     - Test Values: All fixtures are valid values for their respective characteristics.
     - Expected Values: The constructor should successfully create a SegmentSubcommand object with these attributes.
+        - The toString() function of the SegmentSubcommand class will be used to ensure that the created object has all of the correct input characteristics
 
 - Test Case 2 (Test ID: 02)
+    - This test case tests for the ability of the constructor to throw a SemanticError due to having the same origin and destination
     - Fixtures: Origin = "JFK", Destination = "JFK", FlightNumber = "AA123", DepartureDate = Future Date, CabinType = "Economy", NumPeople = 2.
     - Test Values: The origin is the same as the destination.
     - Expected Values: A SemanticError should be thrown because the origin is the same as the destination.
+        - We will assert that a SemanticError has been thrown after passing the above values into the constructor
 
 - Test Case 3 (Test ID: 03)
+    -  This test case tests for the ability of the constructor to throw a SemanticError due to the date being in the past
     - Fixtures: Origin = "JFK", Destination = "LAX", FlightNumber = "AA123", DepartureDate = Past Date, CabinType = "Economy", NumPeople = 2.
     - Test Values: The DepartureDate is a date in the past.
     - Expected Values: A SemanticError should be thrown because the departure date is on or before the current date.
+        - We will assert that a SemanticError has been thrown after passing the above values into the constructor
 
 To achieve Base Choice Coverage, we would need to create test cases for each characteristic where we use the base choice for that characteristic and the base choices for all other characteristics. Then, we would create additional test cases where we use other choices for one characteristic while keeping the base choices for all other characteristics.
 
