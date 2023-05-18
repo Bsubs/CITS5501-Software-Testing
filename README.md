@@ -249,40 +249,40 @@ Postconditions are what the ShopFlightFare command returns after a successful ex
 
 Input Space Partitioning (ISP) is a technique that involves dividing the input space into partitions. Partitions are a collection of disjoint sets which cover the domain of the function that we are trying to model. 
 
-For the parameters origin, destination and flight number, syntactic correctness will be part of the partitions tested. As a postcondition, the method throws an exception if one of the above parameters is syntactically incorrect so that will need to be tested. 
+For the parameter’s origin, destination and flight number, syntactic correctness will be part of the partitions tested. As a postcondition, the method throws an exception if one of the above parameters is syntactically incorrect so that will need to be tested. 
 
 For the parameters cabinType, departureDate and numPeople, syntatic correctness will not be one of the partitions tested as the syntatic correctness of those parameters are assumed preconditions of the method. Behaviour is undefined in the event that one of these parameters is not syntactically correct. 
 
-We will also not include any partitions that involve passing in invalid types (such as a int into a Sting parameter) as the code would not compile. 
+We will also not include any partitions that involve passing in invalid types (such as an int into a Sting parameter) as the code would not compile. 
 
 - `origin`: The origin airport code. It should be a valid 3-letter IATA airport code. Partitions: 
     - Semantically valid codes: This is the base choice
     - Semantically invalid codes: This tests the ability of the method to throw a SemanticError due to invalid IATA codes.
     - 
 
-- `destination`: The destination airport code. It should be a valid 3-letter IATA airport code. Partitions: valid codes, invalid codes, non-string inputs, null/empty.
+- `destination`: The destination airport code. It should be a valid 3-letter IATA airport code. Partitions: 
     - Semantically valid codes: This is the base choice
-    - Semantically invalid codes: This tests the ability of the method to throw a SemanticError due to invalid IATA codes.
+    - Semantically invalid codes: This tests the ability of the method to throw a SemanticError.
 
 - `origin & destination`: This tests if the parser can correctly detect syntactically valid and invalid codes
     - Syntactically Valid Codes: This is the base choice
-    - Syntactically Invalid Codes: This tests the ability of the method to throw a Syntactic Error when presented with IATA codes greater or lesser than 3 letters long.
+    - Syntactically Invalid Codes: This tests the ability of the method to throw a Syntactic Error.
 
-- `origin & destination`: The origin airport code should be different from the destination airport code. This is a compound characteristic involving both the origin and destination. There will be no need to test for syntax or semantics here as the ability of the class to handle those situations should have already been tested in the previous partition.
+- `origin & destination`: The origin airport code should be different from the destination airport code. This is a compound characteristic involving both the origin and destination. 
     - Where origin and destination are different, syntactically and semantically correct IATA codes. This is the base choice
     - Where origin and destination are the same, syntactically and semantically correct IATA codes
 
 - `flightNumber`: The flight number. It should be a valid flight number. 
     - Syntactically and semantically valid codes: This is the base choice
     - Syntactically valid but semantically invalid codes: This tests the ability of the method to throw a SemanticError due to invalid flight numbers.
-    - Syntactically Invalid Codes: This tests the ability of the method to throw a SyntacticError when presented with flight numbers that do not adhere to the definition of flight numbers as per the assignment specification.
+    - Syntactically Invalid Codes: This tests the ability of the method to throw a SyntacticError.
 
 - `departureDate`: The departure date. It should be a date in the future. 
-    - Future Date: This represents a date after the current date. This is the base choice and tests for what happens when a valid departure date is input. This is the base choice.
+    - Future Date: This represents a date after the current date. This is the base choice.
     - Past Date: This represents a date that is strictly before the current date. This tests the ability of the method to throw a SemanticError due to invalid date.
     - Current Date: This represents a boundary case where the departure date is set to be the current date. 
 
-- `cabinType`: The cabin type. Partitions: valid cabin types, invalid cabin types, non-string inputs, null/empty.
+- `cabinType`: The cabin type. Partitions: 
     - Valid Cabin Type: One of the 6 possible cabin types. This is the base choice.
     - Invalid Cabin Type: Any letter that is not one of the 6 possible cabin types
 
@@ -315,11 +315,13 @@ Test Cases:
     - Expected Values: A SemanticError should be thrown because the departure date is on or before the current date.
         - We will assert that a SemanticError has been thrown after passing the above values into the constructor
 
-To achieve Base Choice Coverage, we would need to create test cases for each characteristic where we use the base choice for that characteristic and the base choices for all other characteristics. Then, we would create additional test cases where we use other choices for one characteristic while keeping the base choices for all other characteristics.
+To achieve Base Choice Coverage, we would need to create test cases for each characteristic where we use the base choice for each other characteristic and vary only this one. 
 
 For example, for the "Origin" characteristic, we would first use a valid IATA code (the base choice) and the base choices for all other characteristics. Then, we would create test cases where we use an invalid IATA code, for the "Origin", while using the base choices for all other characteristics.
 
 We would know Base Choice Coverage was achieved when we had tested each characteristic with its base choice and at least one other choice, and all other characteristics were at their base choice. This would mean we had tested the function's behaviour for all characteristics with both their most common inputs and at least one less common or edge case input, while controlling for potential interactions between characteristics.
+
+
 
 
 
